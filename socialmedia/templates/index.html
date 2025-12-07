@@ -3,8 +3,8 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SocialHub - Réseau Social</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <title>Chatly - Réseau Social</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
   <style>
         body {
             box-sizing: border-box;
@@ -17,7 +17,7 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #f5f7fa;
             min-height: 100vh;
             width: 100%;
@@ -226,7 +226,7 @@
             font-size: 1rem;
             resize: vertical;
             min-height: 100px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: white;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
@@ -292,7 +292,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
         }
 
@@ -429,7 +429,7 @@
             padding: 0.625rem 1rem;
             border-radius: 10px;
             transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 500;
         }
 
@@ -485,7 +485,7 @@
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 0.9rem;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .comment-input-field:focus {
@@ -501,7 +501,7 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
         }
 
@@ -586,7 +586,7 @@
             font-weight: 600;
             font-size: 0.85rem;
             transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .add-friend-button:hover {
@@ -619,7 +619,7 @@
             font-weight: 600;
             border-radius: 12px;
             transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .tab-button:hover {
@@ -699,7 +699,7 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
             font-size: 0.9rem;
         }
@@ -717,7 +717,7 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
             font-size: 0.9rem;
         }
@@ -734,7 +734,7 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
             font-size: 0.9rem;
         }
@@ -879,7 +879,7 @@
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             font-size: 0.95rem;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .message-text-input:focus {
@@ -895,7 +895,7 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
         }
 
@@ -968,7 +968,7 @@
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             font-size: 1rem;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .field-input:focus {
@@ -984,7 +984,7 @@
             font-size: 1rem;
             resize: vertical;
             min-height: 110px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .field-textarea:focus {
@@ -1006,7 +1006,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
         }
 
@@ -1132,7 +1132,7 @@
    <aside class="sidebar-nav">
     <div class="brand-logo">
      <div class="brand-name">
-      SocialHub
+      Chatly
      </div>
      <div class="brand-tagline">
       Connectez-vous au monde
@@ -2211,38 +2211,47 @@
         document.getElementById('publishPostButton').addEventListener('click', () => {
             const content = document.getElementById('newPostTextarea').value.trim();
             
-            if (!content && !currentImageData) return;
+            if (!content && !currentImageData) {
+                showToast('Ajoutez du texte ou une image', 'error');
+                return;
+            }
 
             const publishBtn = document.getElementById('publishPostButton');
             publishBtn.disabled = true;
             publishBtn.textContent = 'Publication...';
 
-            const post = {
-                id: `post-${Date.now()}-${Math.random()}`,
-                type: 'post',
-                userId: currentUser.id,
-                userName: currentUser.name,
-                content: content || '',
-                imageData: currentImageData || '',
-                timestamp: new Date().toISOString(),
-                likes: 0,
-                likedBy: '',
-                commentCount: 0
-            };
+            setTimeout(() => {
+                const post = {
+                    id: `post-${Date.now()}-${Math.random()}`,
+                    type: 'post',
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    content: content || 'Photo partagée',
+                    imageData: currentImageData || '',
+                    timestamp: new Date().toISOString(),
+                    likes: 0,
+                    likedBy: '',
+                    commentCount: 0
+                };
 
-            allData = dataManager.addItem(post);
-            document.getElementById('newPostTextarea').value = '';
-            currentImageData = null;
-            document.getElementById('imagePreviewBox').classList.remove('active');
-            document.getElementById('imageFileInput').value = '';
-            
-            publishBtn.disabled = false;
-            publishBtn.textContent = 'Publier';
-            
-            showToast('Publication créée !');
-            updateSidebarProfile();
-            renderPostsFeed();
-            renderContentSuggestions();
+                allData = dataManager.addItem(post);
+                
+                // Réinitialiser le formulaire
+                document.getElementById('newPostTextarea').value = '';
+                currentImageData = null;
+                document.getElementById('imagePreviewBox').classList.remove('active');
+                document.getElementById('imageFileInput').value = '';
+                
+                publishBtn.disabled = false;
+                publishBtn.textContent = 'Publier';
+                
+                showToast('Publication créée !');
+                
+                // Recharger complètement les données
+                allData = dataManager.getData();
+                renderPostsFeed();
+                updateSidebarProfile();
+            }, 100);
         });
 
         // Édition profil
@@ -2280,5 +2289,5 @@
 
         loadData();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aa7c6d88738ba88',t:'MTc2NTE0OTg2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aa7e86d64afba88',t:'MTc2NTE1MTI0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
