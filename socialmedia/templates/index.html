@@ -1,0 +1,2284 @@
+<!doctype html>
+<html lang="fr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SocialHub - Réseau Social</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Menu latéral gauche */
+        .sidebar-nav {
+            width: 280px;
+            background: linear-gradient(180deg, #4a90e2 0%, #357abd 100%);
+            padding: 2rem 0;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            padding: 0 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .brand-tagline {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+            font-weight: 300;
+            margin-top: 0.25rem;
+        }
+
+        .menu-items {
+            flex: 1;
+            padding: 0 1rem;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .menu-link:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .menu-link.active {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .menu-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Zone de contenu principale */
+        .main-container {
+            margin-left: 280px;
+            flex: 1;
+            padding: 2rem;
+            width: calc(100% - 280px);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content-grid.single-column {
+            grid-template-columns: 1fr;
+            max-width: 900px;
+        }
+
+        /* Cartes style moderne */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header-icon {
+            font-size: 1.8rem;
+        }
+
+        /* Profil utilisateur dans sidebar */
+        .user-profile-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 0 1rem 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-avatar-large {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            color: #2d3748;
+            font-weight: 700;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+
+        .profile-username {
+            text-align: center;
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-bio-small {
+            text-align: center;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.8);
+            margin-top: 0.25rem;
+        }
+
+        /* Zone de création de post */
+        .create-post-box {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(74,144,226,0.3);
+        }
+
+        .post-textarea {
+            width: 100%;
+            padding: 1.25rem;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .post-textarea:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .image-preview-box {
+            margin-top: 1rem;
+            position: relative;
+            display: none;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .image-preview-box.active {
+            display: block;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+
+        .remove-img-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .remove-img-btn:hover {
+            background: #ff6b6b;
+            transform: scale(1.1);
+        }
+
+        .post-actions-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #4a90e2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-icon {
+            padding: 0.875rem 1.25rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Posts feed */
+        .posts-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .post-top {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .post-user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border: 3px solid #f5f7fa;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-author-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.05rem;
+        }
+
+        .post-timestamp {
+            color: #a0aec0;
+            font-size: 0.85rem;
+            margin-top: 0.15rem;
+        }
+
+        .post-text-content {
+            color: #4a5568;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .post-img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+
+        .post-interactions {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .interaction-btn {
+            background: transparent;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        .interaction-btn:hover {
+            background: #f7fafc;
+            color: #2d3748;
+        }
+
+        .interaction-btn.liked {
+            color: #4a90e2;
+        }
+
+        .comments-area {
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .comments-area.active {
+            display: block;
+        }
+
+        .comment-item {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #4a90e2;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .comment-text {
+            color: #4a5568;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .comment-form-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .comment-input-field {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .comment-input-field:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        .comment-submit-btn {
+            padding: 0.75rem 1.5rem;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .comment-submit-btn:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+        }
+
+        /* Suggestions sidebar */
+        .suggestions-panel {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .suggestion-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-item:hover {
+            background: #edf2f7;
+            transform: translateX(5px);
+        }
+
+        .suggestion-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid white;
+        }
+
+        .suggestion-details {
+            flex: 1;
+        }
+
+        .suggestion-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .suggestion-reason {
+            color: #718096;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .add-friend-button {
+            padding: 0.5rem 1rem;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .add-friend-button:hover {
+            background: #357abd;
+            transform: scale(1.05);
+        }
+
+        .add-friend-button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        /* Tabs pour la page amis */
+        .tabs-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: #f7fafc;
+            padding: 0.5rem;
+            border-radius: 16px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .tab-button:hover {
+            color: #2d3748;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #4a90e2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .friend-card {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .friend-card:hover {
+            background: #edf2f7;
+            transform: translateX(8px);
+        }
+
+        .friend-avatar-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 1.4rem;
+            border: 3px solid white;
+        }
+
+        .friend-details {
+            flex: 1;
+        }
+
+        .friend-name-text {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.05rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .friend-meta {
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .friend-actions-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-accept {
+            padding: 0.625rem 1.25rem;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-accept:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-decline {
+            padding: 0.625rem 1.25rem;
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-decline:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-message {
+            padding: 0.625rem 1.25rem;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-message:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+        }
+
+        /* Messages page */
+        .messages-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+            height: 650px;
+        }
+
+        .conversations-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            overflow-y: auto;
+        }
+
+        .conversation-card {
+            padding: 1.25rem;
+            cursor: pointer;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        .conversation-card:hover {
+            background: #edf2f7;
+            transform: scale(1.02);
+        }
+
+        .conversation-card.active {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+        }
+
+        .conversation-avatar-img {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .conversation-card.active .conversation-avatar-img {
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .conversation-user-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .conversation-last-message {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-top-bar {
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .messages-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message-bubble-item {
+            max-width: 65%;
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            word-wrap: break-word;
+        }
+
+        .message-bubble-item.sent {
+            background: #4a90e2;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-bubble-item.received {
+            background: #f7fafc;
+            color: #2d3748;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-timestamp {
+            font-size: 0.75rem;
+            opacity: 0.75;
+            margin-top: 0.4rem;
+        }
+
+        .message-compose-area {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1.25rem;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+
+        .message-text-input {
+            flex: 1;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .message-text-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        .message-send-btn {
+            padding: 0.875rem 1.75rem;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .message-send-btn:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+        }
+
+        .empty-chat-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-heading {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #2d3748;
+        }
+
+        .form-field {
+            margin-bottom: 1.5rem;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 0.625rem;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        .field-textarea {
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 110px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .field-textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+        }
+
+        .modal-btn.primary {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+        }
+
+        .modal-btn.secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .empty-placeholder {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #a0aec0;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-text {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-subtext {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Toast notification */
+        .toast-notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: white;
+            padding: 1.25rem 1.75rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            z-index: 3000;
+            display: none;
+            animation: slideInRight 0.4s ease;
+            border-left: 5px solid #48bb78;
+        }
+
+        .toast-notification.active {
+            display: block;
+        }
+
+        .toast-notification.error {
+            border-left-color: #f56565;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(500px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-nav {
+                width: 220px;
+            }
+
+            .main-container {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .suggestions-panel {
+                display: none;
+            }
+
+            .messages-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .conversations-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-nav {
+                display: none;
+            }
+
+            .main-container {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-wrapper"><!-- Menu latéral -->
+   <aside class="sidebar-nav">
+    <div class="brand-logo">
+     <div class="brand-name">
+      SocialHub
+     </div>
+     <div class="brand-tagline">
+      Connectez-vous au monde
+     </div>
+    </div>
+    <div class="user-profile-card" id="sidebarProfile">
+     <div class="profile-avatar-large" id="sidebarProfileAvatar">
+      👤
+     </div>
+     <div class="profile-username" id="sidebarProfileName">
+      Utilisateur
+     </div>
+     <div class="profile-bio-small" id="sidebarProfileBio">
+      Bienvenue
+     </div>
+     <div class="stats-row">
+      <div class="stat-box">
+       <div class="stat-value" id="statsPostsCount">
+        0
+       </div>
+       <div class="stat-label">
+        Posts
+       </div>
+      </div>
+      <div class="stat-box">
+       <div class="stat-value" id="statsFriendsCount">
+        0
+       </div>
+       <div class="stat-label">
+        Amis
+       </div>
+      </div>
+     </div>
+    </div>
+    <nav class="menu-items"><a class="menu-link active" data-page="feed"> <span class="menu-icon">🏠</span> <span>Accueil</span> </a> <a class="menu-link" data-page="friends"> <span class="menu-icon">👥</span> <span>Amis</span> </a> <a class="menu-link" data-page="messages"> <span class="menu-icon">💬</span> <span>Messages</span> </a> <a class="menu-link" data-page="profile"> <span class="menu-icon">⚙️</span> <span>Paramètres</span> </a>
+    </nav>
+   </aside><!-- Contenu principal -->
+   <div class="main-container"><!-- Page Feed -->
+    <div id="feedPage">
+     <div class="content-grid">
+      <div>
+       <div class="create-post-box"><textarea class="post-textarea" id="newPostTextarea" placeholder="Partagez vos pensées..."></textarea>
+        <div class="image-preview-box" id="imagePreviewBox"><img class="preview-img" id="previewImage" alt="Aper��u"> <button class="remove-img-btn" id="removeImageButton">×</button>
+        </div>
+        <div class="post-actions-row"><input type="file" id="imageFileInput" accept="image/*" style="display: none;"> <button class="btn-icon" id="addImageButton">📷</button> <button class="btn btn-primary" id="publishPostButton" style="margin-left: auto;">Publier</button>
+        </div>
+       </div>
+       <div class="posts-feed" id="postsFeedContainer">
+        <div class="empty-placeholder">
+         <div class="empty-icon">
+          📱
+         </div>
+         <div class="empty-text">
+          Aucune publication
+         </div>
+         <div class="empty-subtext">
+          Ajoutez des amis pour voir leurs posts !
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="suggestions-panel">
+       <div class="card">
+        <div class="suggestion-section">
+         <div class="section-subtitle">
+          👥 Suggestions d'amis
+         </div>
+         <div id="friendsSuggestionsContainer"></div>
+        </div>
+        <div class="suggestion-section">
+         <div class="section-subtitle">
+          📌 Contenus populaires
+         </div>
+         <div id="contentSuggestionsContainer"></div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Page Amis -->
+    <div id="friendsPage" style="display: none;">
+     <div class="content-grid single-column">
+      <div class="card">
+       <div class="card-header"><span class="card-header-icon">👥</span> Gérer mes amis
+       </div>
+       <div class="tabs-container"><button class="tab-button active" data-tab-target="myFriendsTab">Mes Amis</button> <button class="tab-button" data-tab-target="requestsTab">Demandes</button> <button class="tab-button" data-tab-target="suggestionsTab">Découvrir</button>
+       </div>
+       <div class="tab-panel active" id="myFriendsTab">
+        <div id="myFriendsListContainer"></div>
+       </div>
+       <div class="tab-panel" id="requestsTab">
+        <div id="friendRequestsListContainer"></div>
+       </div>
+       <div class="tab-panel" id="suggestionsTab">
+        <div id="friendSuggestionsListContainer"></div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Page Messages -->
+    <div id="messagesPage" style="display: none;">
+     <div class="content-grid single-column">
+      <div class="card">
+       <div class="card-header"><span class="card-header-icon">💬</span> Messagerie
+       </div>
+       <div class="messages-layout">
+        <div class="conversations-panel" id="conversationsListPanel">
+         <div class="empty-placeholder">
+          <div class="empty-icon">
+           💬
+          </div>
+          <div class="empty-text">
+           Aucune conversation
+          </div>
+         </div>
+        </div>
+        <div class="chat-panel" id="chatPanelArea">
+         <div class="empty-chat-placeholder">
+          Sélectionnez une conversation
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Modal inscription -->
+  <div class="modal-overlay active" id="registerModalOverlay">
+   <div class="modal-box">
+    <h2 class="modal-heading">Créer votre compte</h2>
+    <form id="registerFormElement">
+     <div class="form-field"><label class="field-label" for="registerNameInput">Nom complet</label> <input type="text" class="field-input" id="registerNameInput" required>
+     </div>
+     <div class="form-field"><label class="field-label" for="registerEmailInput">Email</label> <input type="email" class="field-input" id="registerEmailInput" required>
+     </div>
+     <div class="form-field"><label class="field-label" for="registerBioInput">Bio</label> <textarea class="field-textarea" id="registerBioInput" placeholder="Parlez-nous de vous..."></textarea>
+     </div>
+     <div class="form-field"><label class="field-label" for="registerInterestsInput">Centres d'intérêt (séparés par des virgules)</label> <input type="text" class="field-input" id="registerInterestsInput" placeholder="Tech, Voyage, Sport, Cuisine" required>
+     </div>
+     <div class="modal-buttons"><button type="submit" class="modal-btn primary">S'inscrire</button>
+     </div>
+    </form>
+   </div>
+  </div><!-- Modal édition profil -->
+  <div class="modal-overlay" id="editProfileModalOverlay">
+   <div class="modal-box">
+    <h2 class="modal-heading">Modifier votre profil</h2>
+    <form id="editProfileFormElement">
+     <div class="form-field"><label class="field-label" for="editNameInput">Nom</label> <input type="text" class="field-input" id="editNameInput" required>
+     </div>
+     <div class="form-field"><label class="field-label" for="editBioInput">Bio</label> <textarea class="field-textarea" id="editBioInput"></textarea>
+     </div>
+     <div class="form-field"><label class="field-label" for="editInterestsInput">Centres d'intérêt</label> <input type="text" class="field-input" id="editInterestsInput" placeholder="Tech, Voyage, Sport">
+     </div>
+     <div class="modal-buttons"><button type="button" class="modal-btn secondary" id="cancelEditButton">Annuler</button> <button type="submit" class="modal-btn primary">Enregistrer</button>
+     </div>
+    </form>
+   </div>
+  </div><!-- Toast -->
+  <div class="toast-notification" id="toastNotification"></div>
+  <script>
+        class DataManager {
+            constructor() {
+                this.storageKey = 'socialNetworkData';
+            }
+
+            getData() {
+                const data = localStorage.getItem(this.storageKey);
+                return data ? JSON.parse(data) : [];
+            }
+
+            saveData(data) {
+                localStorage.setItem(this.storageKey, JSON.stringify(data));
+            }
+
+            addItem(item) {
+                const data = this.getData();
+                data.push(item);
+                this.saveData(data);
+                return data;
+            }
+
+            updateItem(updatedItem) {
+                const data = this.getData();
+                const index = data.findIndex(item => item.id === updatedItem.id);
+                if (index !== -1) {
+                    data[index] = updatedItem;
+                    this.saveData(data);
+                }
+                return data;
+            }
+
+            deleteItem(id) {
+                let data = this.getData();
+                data = data.filter(item => item.id !== id);
+                this.saveData(data);
+                return data;
+            }
+        }
+
+        const dataManager = new DataManager();
+        let currentUser = null;
+        let allData = [];
+        let currentPage = "feed";
+        let likedPosts = new Set();
+        let currentImageData = null;
+        let allUsers = [];
+        let friendships = [];
+        let userInteractions = {};
+        let activeConversation = null;
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toastNotification');
+            toast.textContent = message;
+            toast.className = `toast-notification ${type} active`;
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        function loadData() {
+            allData = dataManager.getData();
+            
+            if (!currentUser) {
+                const profiles = allData.filter(item => item.type === 'profile');
+                if (profiles.length === 0) {
+                    document.getElementById('registerModalOverlay').classList.add('active');
+                    return;
+                } else {
+                    const profile = profiles[0];
+                    currentUser = {
+                        id: profile.userId,
+                        name: profile.userName,
+                        email: profile.email,
+                        bio: profile.bio || 'Bienvenue',
+                        interests: profile.interests ? profile.interests.split(',').map(i => i.trim()) : []
+                    };
+                }
+            }
+
+            allUsers = allData.filter(item => item.type === 'profile');
+            friendships = allData.filter(item => item.type === 'friendship');
+            
+            if (currentUser) {
+                const profile = allData.find(item => item.type === 'profile' && item.userId === currentUser.id);
+                if (profile) {
+                    currentUser.name = profile.userName || currentUser.name;
+                    currentUser.bio = profile.bio || currentUser.bio;
+                    currentUser.interests = profile.interests ? profile.interests.split(',').map(i => i.trim()) : [];
+                    currentUser.email = profile.email || currentUser.email;
+                }
+
+                calculateUserInteractions();
+                updateUI();
+            }
+        }
+
+        function calculateUserInteractions() {
+            userInteractions = {};
+            
+            allData.filter(item => item.type === 'post').forEach(post => {
+                if (post.likedBy && post.likedBy.includes(currentUser.id)) {
+                    if (!userInteractions[post.userId]) {
+                        userInteractions[post.userId] = { likes: 0, comments: 0, posts: [] };
+                    }
+                    userInteractions[post.userId].likes++;
+                    userInteractions[post.userId].posts.push(post.id);
+                }
+            });
+
+            allData.filter(item => item.type === 'comment' && item.userId === currentUser.id).forEach(comment => {
+                const post = allData.find(p => p.id === comment.parentPostId);
+                if (post) {
+                    if (!userInteractions[post.userId]) {
+                        userInteractions[post.userId] = { likes: 0, comments: 0, posts: [] };
+                    }
+                    userInteractions[post.userId].comments++;
+                }
+            });
+        }
+
+        function getMyFriends() {
+            return friendships.filter(f => 
+                ((f.userId === currentUser.id || f.friendId === currentUser.id) && f.status === 'accepted')
+            ).map(f => f.userId === currentUser.id ? f.friendId : f.userId);
+        }
+
+        function updateUI() {
+            updateSidebarProfile();
+            
+            if (currentPage === 'feed') {
+                document.getElementById('feedPage').style.display = 'block';
+                document.getElementById('friendsPage').style.display = 'none';
+                document.getElementById('messagesPage').style.display = 'none';
+                renderPostsFeed();
+                renderFriendsSuggestions();
+                renderContentSuggestions();
+            } else if (currentPage === 'friends') {
+                document.getElementById('feedPage').style.display = 'none';
+                document.getElementById('friendsPage').style.display = 'block';
+                document.getElementById('messagesPage').style.display = 'none';
+                renderFriendsPage();
+            } else if (currentPage === 'messages') {
+                document.getElementById('feedPage').style.display = 'none';
+                document.getElementById('friendsPage').style.display = 'none';
+                document.getElementById('messagesPage').style.display = 'block';
+                renderMessagesPage();
+            }
+        }
+
+        function updateSidebarProfile() {
+            if (!currentUser) return;
+            
+            document.getElementById('sidebarProfileName').textContent = currentUser.name;
+            document.getElementById('sidebarProfileBio').textContent = currentUser.bio;
+            document.getElementById('sidebarProfileAvatar').textContent = currentUser.name[0].toUpperCase();
+            
+            const myPosts = allData.filter(item => item.type === 'post' && item.userId === currentUser.id);
+            document.getElementById('statsPostsCount').textContent = myPosts.length;
+            document.getElementById('statsFriendsCount').textContent = getMyFriends().length;
+        }
+
+        function renderPostsFeed() {
+            const container = document.getElementById('postsFeedContainer');
+            const myFriends = getMyFriends();
+            
+            const posts = allData.filter(item => 
+                item.type === 'post' && 
+                (item.userId === currentUser.id || myFriends.includes(item.userId))
+            ).sort((a, b) => 
+                new Date(b.timestamp) - new Date(a.timestamp)
+            );
+
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-placeholder">
+                        <div class="empty-icon">📱</div>
+                        <div class="empty-text">Aucune publication</div>
+                        <div class="empty-subtext">Ajoutez des amis pour voir leurs posts !</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            posts.forEach(post => {
+                const postEl = createPostCard(post);
+                container.appendChild(postEl);
+            });
+        }
+
+        function createPostCard(post) {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post-card';
+            
+            const timeAgo = getTimeAgo(new Date(post.timestamp));
+            const isLiked = post.likedBy && post.likedBy.includes(currentUser.id);
+            if (isLiked) likedPosts.add(post.id);
+            
+            const imageHTML = post.imageData ? `<img src="${post.imageData}" alt="Image" class="post-img">` : '';
+            
+            postDiv.innerHTML = `
+                <div class="post-top">
+                    <div class="post-user-avatar">${post.userName ? post.userName[0].toUpperCase() : '?'}</div>
+                    <div class="post-user-info">
+                        <div class="post-author-name">${post.userName}</div>
+                        <div class="post-timestamp">${timeAgo}</div>
+                    </div>
+                </div>
+                <div class="post-text-content">${post.content}</div>
+                ${imageHTML}
+                <div class="post-interactions">
+                    <button class="interaction-btn ${isLiked ? 'liked' : ''}" data-action="like" data-post-id="${post.id}">
+                        ${isLiked ? '❤️' : '🤍'} ${post.likes || 0}
+                    </button>
+                    <button class="interaction-btn" data-action="comment" data-post-id="${post.id}">
+                        💬 ${post.commentCount || 0}
+                    </button>
+                </div>
+                <div class="comments-area" id="comments-area-${post.id}">
+                    <div id="comments-list-${post.id}"></div>
+                    <div class="comment-form-row">
+                        <input type="text" class="comment-input-field" id="comment-input-${post.id}" placeholder="Ajouter un commentaire...">
+                        <button class="comment-submit-btn" data-post-id="${post.id}">Envoyer</button>
+                    </div>
+                </div>
+            `;
+
+            const likeBtn = postDiv.querySelector('[data-action="like"]');
+            likeBtn.addEventListener('click', () => handleLikePost(post));
+
+            const commentBtn = postDiv.querySelector('[data-action="comment"]');
+            commentBtn.addEventListener('click', () => toggleCommentsArea(post.id));
+
+            const commentSubmitBtn = postDiv.querySelector('.comment-submit-btn');
+            commentSubmitBtn.addEventListener('click', () => handleAddComment(post.id));
+
+            return postDiv;
+        }
+
+        function toggleCommentsArea(postId) {
+            const commentsArea = document.getElementById(`comments-area-${postId}`);
+            const isVisible = commentsArea.classList.contains('active');
+            commentsArea.classList.toggle('active');
+
+            if (!isVisible) {
+                renderCommentsForPost(postId);
+            }
+        }
+
+        function renderCommentsForPost(postId) {
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            const comments = allData.filter(item => item.type === 'comment' && item.parentPostId === postId);
+
+            commentsList.innerHTML = '';
+            comments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment-item';
+                commentDiv.innerHTML = `
+                    <div class="comment-author">${comment.userName}</div>
+                    <div class="comment-text">${comment.content}</div>
+                `;
+                commentsList.appendChild(commentDiv);
+            });
+        }
+
+        function handleLikePost(post) {
+            const isLiked = likedPosts.has(post.id);
+            const newLikes = isLiked ? (post.likes || 1) - 1 : (post.likes || 0) + 1;
+            
+            let likedByArray = post.likedBy ? post.likedBy.split(',') : [];
+            if (isLiked) {
+                likedByArray = likedByArray.filter(id => id !== currentUser.id);
+                likedPosts.delete(post.id);
+            } else {
+                likedByArray.push(currentUser.id);
+                likedPosts.add(post.id);
+            }
+
+            const updatedPost = {
+                ...post,
+                likes: newLikes,
+                likedBy: likedByArray.join(',')
+            };
+
+            allData = dataManager.updateItem(updatedPost);
+            renderPostsFeed();
+        }
+
+        function handleAddComment(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+            
+            if (!content) return;
+
+            const post = allData.find(p => p.id === postId);
+            if (!post) return;
+
+            const comment = {
+                id: `comment-${Date.now()}-${Math.random()}`,
+                type: 'comment',
+                userId: currentUser.id,
+                userName: currentUser.name,
+                parentPostId: postId,
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+
+            const updatedPost = {
+                ...post,
+                commentCount: (post.commentCount || 0) + 1
+            };
+
+            allData = dataManager.addItem(comment);
+            allData = dataManager.updateItem(updatedPost);
+            
+            input.value = '';
+            renderCommentsForPost(postId);
+            renderPostsFeed();
+            showToast('Commentaire ajouté !');
+        }
+
+        function calculateInterestSimilarity(interests1, interests2) {
+            const set1 = new Set(interests1.map(i => i.toLowerCase()));
+            const set2 = new Set(interests2.map(i => i.toLowerCase()));
+            const intersection = new Set([...set1].filter(x => set2.has(x)));
+            const union = new Set([...set1, ...set2]);
+            return union.size === 0 ? 0 : intersection.size / union.size;
+        }
+
+        function getFriendRecommendations() {
+            if (!currentUser) return [];
+            
+            const myFriends = getMyFriends();
+
+            const pendingRequests = friendships.filter(f => 
+                f.userId === currentUser.id || f.friendId === currentUser.id
+            ).map(f => f.userId === currentUser.id ? f.friendId : f.userId);
+
+            const candidates = allUsers.filter(u => 
+                u.userId !== currentUser.id && !pendingRequests.includes(u.userId)
+            );
+
+            const scored = candidates.map(user => {
+                let score = 0;
+                const userInterests = user.interests ? user.interests.split(',').map(i => i.trim()) : [];
+                
+                const interestSimilarity = calculateInterestSimilarity(currentUser.interests, userInterests);
+                score += interestSimilarity * 50;
+
+                const mutualFriends = friendships.filter(f => 
+                    ((f.userId === user.userId && myFriends.includes(f.friendId)) ||
+                     (f.friendId === user.userId && myFriends.includes(f.userId))) &&
+                    f.status === 'accepted'
+                ).length;
+                score += mutualFriends * 10;
+
+                if (userInteractions[user.userId]) {
+                    score += userInteractions[user.userId].likes * 5;
+                    score += userInteractions[user.userId].comments * 3;
+                }
+
+                return { user, score, mutualFriends, commonInterests: Math.floor(interestSimilarity * currentUser.interests.length) };
+            });
+
+            return scored.sort((a, b) => b.score - a.score).slice(0, 5);
+        }
+
+        function getContentRecommendations() {
+            if (!currentUser) return [];
+            
+            const myInterests = currentUser.interests.map(i => i.toLowerCase());
+            const myFriends = getMyFriends();
+            const posts = allData.filter(item => 
+                item.type === 'post' && 
+                item.userId !== currentUser.id &&
+                !myFriends.includes(item.userId)
+            );
+
+            const scored = posts.map(post => {
+                let score = 0;
+                
+                const postUser = allUsers.find(u => u.userId === post.userId);
+                if (postUser) {
+                    const userInterests = postUser.interests ? postUser.interests.split(',').map(i => i.trim().toLowerCase()) : [];
+                    const commonInterests = myInterests.filter(i => userInterests.includes(i)).length;
+                    score += commonInterests * 10;
+                }
+
+                const contentLower = post.content.toLowerCase();
+                myInterests.forEach(interest => {
+                    if (contentLower.includes(interest)) {
+                        score += 20;
+                    }
+                });
+
+                score += (post.likes || 0) * 2;
+                score += (post.commentCount || 0) * 3;
+
+                const postAge = Date.now() - new Date(post.timestamp).getTime();
+                const daysSincePost = postAge / (1000 * 60 * 60 * 24);
+                score -= daysSincePost * 2;
+
+                return { post, score };
+            });
+
+            return scored.sort((a, b) => b.score - a.score).slice(0, 3);
+        }
+
+        function renderFriendsSuggestions() {
+            const container = document.getElementById('friendsSuggestionsContainer');
+            const recommendations = getFriendRecommendations();
+
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-placeholder">
+                        <div class="empty-icon">👥</div>
+                        <div class="empty-text" style="font-size: 0.9rem;">Aucune suggestion</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            recommendations.forEach(({ user, mutualFriends, commonInterests }) => {
+                const friendDiv = document.createElement('div');
+                friendDiv.className = 'suggestion-item';
+                
+                const reasons = [];
+                if (commonInterests > 0) reasons.push(`${commonInterests} intérêt${commonInterests > 1 ? 's' : ''} commun${commonInterests > 1 ? 's' : ''}`);
+                if (mutualFriends > 0) reasons.push(`${mutualFriends} ami${mutualFriends > 1 ? 's' : ''} en commun`);
+                const reasonText = reasons.length > 0 ? reasons.join(', ') : 'Suggestion';
+
+                friendDiv.innerHTML = `
+                    <div class="suggestion-avatar">${user.userName[0].toUpperCase()}</div>
+                    <div class="suggestion-details">
+                        <div class="suggestion-name">${user.userName}</div>
+                        <div class="suggestion-reason">${reasonText}</div>
+                    </div>
+                    <button class="add-friend-button" data-user-id="${user.userId}">Ajouter</button>
+                `;
+
+                const addBtn = friendDiv.querySelector('.add-friend-button');
+                addBtn.addEventListener('click', () => {
+                    handleSendFriendRequest(user.userId, addBtn);
+                });
+
+                container.appendChild(friendDiv);
+            });
+        }
+
+        function renderContentSuggestions() {
+            const container = document.getElementById('contentSuggestionsContainer');
+            const recommendations = getContentRecommendations();
+
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-placeholder">
+                        <div class="empty-icon">📌</div>
+                        <div class="empty-text" style="font-size: 0.9rem;">Aucun contenu</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            recommendations.forEach(({ post }) => {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'suggestion-item';
+                postDiv.style.cursor = 'pointer';
+                
+                const preview = post.content.substring(0, 50) + (post.content.length > 50 ? '...' : '');
+                
+                postDiv.innerHTML = `
+                    <div class="suggestion-avatar">${post.userName[0].toUpperCase()}</div>
+                    <div class="suggestion-details">
+                        <div class="suggestion-name">${post.userName}</div>
+                        <div class="suggestion-reason">${preview}</div>
+                    </div>
+                `;
+
+                container.appendChild(postDiv);
+            });
+        }
+
+        function handleSendFriendRequest(friendId, button) {
+            button.disabled = true;
+            button.textContent = 'Envoyé ✓';
+
+            const friendship = {
+                id: `friend-${Date.now()}-${Math.random()}`,
+                type: 'friendship',
+                userId: currentUser.id,
+                friendId: friendId,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+
+            allData = dataManager.addItem(friendship);
+            friendships = allData.filter(item => item.type === 'friendship');
+            showToast('Demande d\'ami envoyée !');
+            updateSidebarProfile();
+        }
+
+        function renderFriendsPage() {
+            renderMyFriendsList();
+            renderFriendRequestsList();
+            renderFriendSuggestionsPage();
+        }
+
+        function renderMyFriendsList() {
+            const container = document.getElementById('myFriendsListContainer');
+            const myFriends = getMyFriends();
+            
+            if (myFriends.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-placeholder">
+                        <div class="empty-icon">👥</div>
+                        <div class="empty-text">Aucun ami</div>
+                        <div class="empty-subtext">Consultez les suggestions !</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            myFriends.forEach(friendId => {
+                const friendUser = allUsers.find(u => u.userId === friendId);
+                if (!friendUser) return;
+
+                const friendDiv = document.createElement('div');
+                friendDiv.className = 'friend-card';
+                
+                const friendInterests = friendUser.interests ? friendUser.interests.split(',').map(i => i.trim()) : [];
+                const commonInterests = currentUser.interests.filter(i => 
+                    friendInterests.map(fi => fi.toLowerCase()).includes(i.toLowerCase())
+                ).length;
+
+                friendDiv.innerHTML = `
+                    <div class="friend-avatar-large">${friendUser.userName[0].toUpperCase()}</div>
+                    <div class="friend-details">
+                        <div class="friend-name-text">${friendUser.userName}</div>
+                        <div class="friend-meta">${commonInterests > 0 ? `${commonInterests} intérêt${commonInterests > 1 ? 's' : ''} commun${commonInterests > 1 ? 's' : ''}` : 'Votre ami'}</div>
+                    </div>
+                    <button class="btn-message" data-user-id="${friendUser.userId}">Message</button>
+                `;
+
+                const messageBtn = friendDiv.querySelector('.btn-message');
+                messageBtn.addEventListener('click', () => {
+                    currentPage = 'messages';
+                    updateUI();
+                    setTimeout(() => {
+                        openConversationWith(friendId);
+                    }, 100);
+                });
+
+                container.appendChild(friendDiv);
+            });
+        }
+
+        function renderFriendRequestsList() {
+            const container = document.getElementById('friendRequestsListContainer');
+            const requests = friendships.filter(f => 
+                f.friendId === currentUser.id && f.status === 'pending'
+            );
+
+            if (requests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-placeholder">
+                        <div class="empty-icon">📬</div>
+                        <div class="empty-text">Aucune demande en attente</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            requests.forEach(request => {
+                const requester = allUsers.find(u => u.userId === request.userId);
+                if (!requester) return;
+
+                const friendDiv = document.createElement('div');
+                friendDiv.className = 'friend-card';
+                
+                friendDiv.innerHTML = `
+                    <div class="friend-avatar-large">${requester.userName[0].toUpperCase()}</div>
+                    <div class="friend-details">
+                        <div class="friend-name-text">${requester.userName}</div>
+                        <div class="friend-meta">Demande d'ami</div>
+                    </div>
+                    <div class="friend-actions-group">
+                        <button class="btn-accept" data-request-id="${request.id}">Accepter</button>
+                        <button class="btn-decline" data-request-id="${request.id}">Refuser</button>
+                    </div>
+                `;
+
+                const acceptBtn = friendDiv.querySelector('.btn-accept');
+                acceptBtn.addEventListener('click', () => handleAcceptFriendRequest(request));
+
+                const declineBtn = friendDiv.querySelector('.btn-decline');
+                declineBtn.addEventListener('click', () => handleDeclineFriendRequest(request));
+
+                container.appendChild(friendDiv);
+            });
+        }
+
+        function renderFriendSuggestionsPage() {
+            const container = document.getElementById('friendSuggestionsListContainer');
+            const recommendations = getFriendRecommendations();
+
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-placeholder">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-text">Aucune suggestion</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            recommendations.forEach(({ user, mutualFriends, commonInterests }) => {
+                const friendDiv = document.createElement('div');
+                friendDiv.className = 'friend-card';
+                
+                const reasons = [];
+                if (commonInterests > 0) reasons.push(`${commonInterests} intérêt${commonInterests > 1 ? 's' : ''} commun${commonInterests > 1 ? 's' : ''}`);
+                if (mutualFriends > 0) reasons.push(`${mutualFriends} ami${mutualFriends > 1 ? 's' : ''} en commun`);
+                const reasonText = reasons.length > 0 ? reasons.join(', ') : 'Suggestion';
+
+                friendDiv.innerHTML = `
+                    <div class="friend-avatar-large">${user.userName[0].toUpperCase()}</div>
+                    <div class="friend-details">
+                        <div class="friend-name-text">${user.userName}</div>
+                        <div class="friend-meta">${reasonText}</div>
+                    </div>
+                    <button class="add-friend-button" data-user-id="${user.userId}">Ajouter</button>
+                `;
+
+                const addBtn = friendDiv.querySelector('.add-friend-button');
+                addBtn.addEventListener('click', () => {
+                    handleSendFriendRequest(user.userId, addBtn);
+                });
+
+                container.appendChild(friendDiv);
+            });
+        }
+
+        function handleAcceptFriendRequest(request) {
+            const updatedRequest = {
+                ...request,
+                status: 'accepted'
+            };
+
+            allData = dataManager.updateItem(updatedRequest);
+            friendships = allData.filter(item => item.type === 'friendship');
+            showToast('Demande acceptée !');
+            updateSidebarProfile();
+            renderFriendsPage();
+            renderPostsFeed();
+        }
+
+        function handleDeclineFriendRequest(request) {
+            allData = dataManager.deleteItem(request.id);
+            friendships = allData.filter(item => item.type === 'friendship');
+            showToast('Demande refusée');
+            renderFriendsPage();
+        }
+
+        function renderMessagesPage() {
+            renderConversationsList();
+        }
+
+        function renderConversationsList() {
+            const container = document.getElementById('conversationsListPanel');
+            const myFriends = getMyFriends();
+
+            if (myFriends.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-placeholder">
+                        <div class="empty-icon">💬</div>
+                        <div class="empty-text">Aucune conversation</div>
+                        <div class="empty-subtext" style="font-size: 0.85rem;">Ajoutez des amis</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            myFriends.forEach(friendId => {
+                const friendUser = allUsers.find(u => u.userId === friendId);
+                if (!friendUser) return;
+
+                const messages = allData.filter(item => 
+                    item.type === 'message' &&
+                    ((item.senderId === currentUser.id && item.receiverId === friendId) ||
+                     (item.senderId === friendId && item.receiverId === currentUser.id))
+                ).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                const lastMessage = messages[0];
+                const preview = lastMessage ? 
+                    (lastMessage.content.substring(0, 25) + (lastMessage.content.length > 25 ? '...' : '')) : 
+                    'Nouvelle conversation';
+
+                const convDiv = document.createElement('div');
+                convDiv.className = 'conversation-card';
+                if (activeConversation === friendId) {
+                    convDiv.classList.add('active');
+                }
+
+                convDiv.innerHTML = `
+                    <div class="conversation-avatar-img">${friendUser.userName[0].toUpperCase()}</div>
+                    <div class="conversation-user-name">${friendUser.userName}</div>
+                    <div class="conversation-last-message">${preview}</div>
+                `;
+
+                convDiv.addEventListener('click', () => openConversationWith(friendId));
+                container.appendChild(convDiv);
+            });
+        }
+
+        function openConversationWith(friendId) {
+            activeConversation = friendId;
+            renderConversationsList();
+            renderChatPanel(friendId);
+        }
+
+        function renderChatPanel(friendId) {
+            const chatPanel = document.getElementById('chatPanelArea');
+            const friendUser = allUsers.find(u => u.userId === friendId);
+            
+            if (!friendUser) return;
+
+            chatPanel.innerHTML = `
+                <div class="chat-top-bar">${friendUser.userName}</div>
+                <div class="messages-scroll-area" id="messagesScrollArea"></div>
+                <div class="message-compose-area">
+                    <input type="text" class="message-text-input" id="messageTextInput" placeholder="Écrire un message...">
+                    <button class="message-send-btn" id="messageSendButton">Envoyer</button>
+                </div>
+            `;
+
+            renderChatMessagesFor(friendId);
+
+            const sendBtn = document.getElementById('messageSendButton');
+            const messageInput = document.getElementById('messageTextInput');
+
+            sendBtn.addEventListener('click', () => sendMessageTo(friendId));
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessageTo(friendId);
+                }
+            });
+        }
+
+        function renderChatMessagesFor(friendId) {
+            const messagesList = document.getElementById('messagesScrollArea');
+            const messages = allData.filter(item => 
+                item.type === 'message' &&
+                ((item.senderId === currentUser.id && item.receiverId === friendId) ||
+                 (item.senderId === friendId && item.receiverId === currentUser.id))
+            ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+            if (messages.length === 0) {
+                messagesList.innerHTML = `
+                    <div class="empty-chat-placeholder">
+                        Commencez une conversation 👋
+                    </div>
+                `;
+                return;
+            }
+
+            messagesList.innerHTML = '';
+            messages.forEach(message => {
+                const isSent = message.senderId === currentUser.id;
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-bubble-item ${isSent ? 'sent' : 'received'}`;
+                
+                const timeAgo = getTimeAgo(new Date(message.timestamp));
+                
+                messageDiv.innerHTML = `
+                    <div>${message.content}</div>
+                    <div class="message-timestamp">${timeAgo}</div>
+                `;
+                
+                messagesList.appendChild(messageDiv);
+            });
+
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+
+        function sendMessageTo(friendId) {
+            const messageInput = document.getElementById('messageTextInput');
+            const content = messageInput.value.trim();
+
+            if (!content) return;
+
+            const message = {
+                id: `message-${Date.now()}-${Math.random()}`,
+                type: 'message',
+                senderId: currentUser.id,
+                receiverId: friendId,
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+
+            allData = dataManager.addItem(message);
+            messageInput.value = '';
+            renderChatMessagesFor(friendId);
+            renderConversationsList();
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return 'À l\'instant';
+            if (seconds < 3600) return `Il y a ${Math.floor(seconds / 60)} min`;
+            if (seconds < 86400) return `Il y a ${Math.floor(seconds / 3600)} h`;
+            return `Il y a ${Math.floor(seconds / 86400)} j`;
+        }
+
+        // Navigation
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                currentPage = link.dataset.page;
+                
+                if (currentPage === 'profile') {
+                    document.getElementById('editNameInput').value = currentUser.name;
+                    document.getElementById('editBioInput').value = currentUser.bio;
+                    document.getElementById('editInterestsInput').value = currentUser.interests.join(', ');
+                    document.getElementById('editProfileModalOverlay').classList.add('active');
+                    currentPage = 'feed';
+                } else {
+                    updateUI();
+                }
+            });
+        });
+
+        // Tabs
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabTarget = btn.dataset.tabTarget;
+                document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(tabTarget).classList.add('active');
+            });
+        });
+
+        // Inscription
+        document.getElementById('registerFormElement').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerNameInput').value.trim();
+            const email = document.getElementById('registerEmailInput').value.trim();
+            const bio = document.getElementById('registerBioInput').value.trim();
+            const interests = document.getElementById('registerInterestsInput').value.trim();
+
+            if (!name || !email || !interests) {
+                showToast('Veuillez remplir tous les champs', 'error');
+                return;
+            }
+
+            const userId = `user-${Date.now()}-${Math.random()}`;
+            currentUser = {
+                id: userId,
+                name: name,
+                email: email,
+                bio: bio || 'Nouveau membre',
+                interests: interests.split(',').map(i => i.trim())
+            };
+
+            const profileData = {
+                id: `profile-${userId}`,
+                type: 'profile',
+                userId: userId,
+                userName: name,
+                email: email,
+                bio: bio || 'Nouveau membre',
+                interests: interests,
+                timestamp: new Date().toISOString()
+            };
+
+            allData = dataManager.addItem(profileData);
+            document.getElementById('registerModalOverlay').classList.remove('active');
+            showToast('Compte créé !');
+            loadData();
+        });
+
+        // Upload image
+        document.getElementById('addImageButton').addEventListener('click', () => {
+            document.getElementById('imageFileInput').click();
+        });
+
+        document.getElementById('imageFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    currentImageData = event.target.result;
+                    document.getElementById('previewImage').src = currentImageData;
+                    document.getElementById('imagePreviewBox').classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('removeImageButton').addEventListener('click', () => {
+            currentImageData = null;
+            document.getElementById('imagePreviewBox').classList.remove('active');
+            document.getElementById('imageFileInput').value = '';
+        });
+
+        // Publier post
+        document.getElementById('publishPostButton').addEventListener('click', () => {
+            const content = document.getElementById('newPostTextarea').value.trim();
+            
+            if (!content && !currentImageData) return;
+
+            const publishBtn = document.getElementById('publishPostButton');
+            publishBtn.disabled = true;
+            publishBtn.textContent = 'Publication...';
+
+            const post = {
+                id: `post-${Date.now()}-${Math.random()}`,
+                type: 'post',
+                userId: currentUser.id,
+                userName: currentUser.name,
+                content: content || '',
+                imageData: currentImageData || '',
+                timestamp: new Date().toISOString(),
+                likes: 0,
+                likedBy: '',
+                commentCount: 0
+            };
+
+            allData = dataManager.addItem(post);
+            document.getElementById('newPostTextarea').value = '';
+            currentImageData = null;
+            document.getElementById('imagePreviewBox').classList.remove('active');
+            document.getElementById('imageFileInput').value = '';
+            
+            publishBtn.disabled = false;
+            publishBtn.textContent = 'Publier';
+            
+            showToast('Publication créée !');
+            updateSidebarProfile();
+            renderPostsFeed();
+            renderContentSuggestions();
+        });
+
+        // Édition profil
+        document.getElementById('cancelEditButton').addEventListener('click', () => {
+            document.getElementById('editProfileModalOverlay').classList.remove('active');
+        });
+
+        document.getElementById('editProfileFormElement').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('editNameInput').value.trim();
+            const bio = document.getElementById('editBioInput').value.trim();
+            const interests = document.getElementById('editInterestsInput').value;
+
+            const existingProfile = allData.find(item => item.type === 'profile' && item.userId === currentUser.id);
+
+            if (existingProfile) {
+                const updatedProfile = {
+                    ...existingProfile,
+                    userName: name,
+                    bio: bio,
+                    interests: interests
+                };
+                allData = dataManager.updateItem(updatedProfile);
+            }
+
+            currentUser.name = name;
+            currentUser.bio = bio;
+            currentUser.interests = interests.split(',').map(i => i.trim());
+
+            document.getElementById('editProfileModalOverlay').classList.remove('active');
+            showToast('Profil mis à jour !');
+            loadData();
+        });
+
+        loadData();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aa7c6d88738ba88',t:'MTc2NTE0OTg2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
