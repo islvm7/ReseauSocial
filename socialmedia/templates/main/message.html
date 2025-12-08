@@ -1,0 +1,23 @@
+{% extends 'social/base.html' %}
+
+{% block content %}
+<div id="messagesPage" class="messages-page active">
+
+    <div class="messages-layout">
+        <div class="conversations-list" id="conversationsList">
+            <div class="empty-state">
+                <div class="empty-icon">💬</div>
+                <div class="empty-title">Aucune conversation</div>
+            </div>
+        </div>
+
+        <div class="chat-area" id="chatArea">
+            <div class="empty-state" style="height:100%; display:flex; flex-direction:column; justify-content:center;">
+                <div class="empty-icon">💬</div>
+                <div class="empty-title">Sélectionnez une conversation</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

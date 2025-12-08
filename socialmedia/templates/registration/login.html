@@ -1,12 +1,92 @@
+{%extends 'main/base.html'%}
+{%load static%}
+{% block head %}
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        transition: background 0.5s ease;
+    }
+    .login-container {
+        width: 90%;
+        max-width: 400px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        transform: translateY(-20px);
+        opacity: 0;
+        animation: fadeInUp 0.6s forwards;
+        justify-content: center;
+        align-items: center;
+        display: grid;
+        place-content: center;
+    }
+
+    @keyframes fadeInUp {
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    .login-container h2{
+        text-align: center;
+        font-size: 26px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .login-container form p{
+        margin-bottom: 18px;
+    }
+    .login-container label{
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .login-container input{
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        outline: none;
+        transition: 0.2s;
+    }
+    .login-container input:focus{
+        border-color: #4A90E2;
+        box-shadow: 0 0 5px rgba(74,144,226,0.4);
+    }
+    .login-container button{
+        width: 100%;
+        background: #4A90E2;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.2s;
+        margin-top: 10px;
+    }
+    .login-container button:hover{
+        background: #357ABD;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
 <h2>Connexion</h2>
 
 <form method="post">
     {% csrf_token %}
-    <label>Nom d'utilisateur :</label>
-    <input type="text" name="username">
-
-    <label>Mot de passe :</label>
-    <input type="password" name="password">
+    {{form.as_p}}
 
     <button type="submit">Se connecter</button>
 </form>
+</div>
+{% endblock %}
