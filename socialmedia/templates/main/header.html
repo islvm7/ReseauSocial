@@ -3,15 +3,18 @@
         <div class="logo-icon">🚀</div>
         <div class="logo-text">SocialNet</div>
     </div>
-
+    {% if user.is_authenticated %}
     <nav class="header-nav">
-        <button class="nav-item active" data-page="feed">🏠 Accueil</button>
+        <button class="nav-item active" data-page="feed"><a href="{% url 'socialmedia:index' %}">🏠 Accueil</a></button>
         <button class="nav-item" data-page="friends">👥 Amis</button>
         <button class="nav-item" data-page="messages">💬 Messages</button>
+        <button class="nav-item" data-page="messages"><a href="{% url 'socialmedia:post' %}"> Publier</a></button>
     </nav>
 
     <div class="user-menu" id="userMenuButton">
-        <div class="user-avatar-small" id="headerAvatar">U</div>
-        <div class="user-name-header" id="headerUserName">Utilisateur</div>
+        <div class="user-avatar-small" id="headerAvatar">{{ user.username|first|upper }}
+</div>
+        <div class="user-name-header" id="headerUserName">{{ user.username }}</div>
     </div>
+    {% endif %}
 </header>

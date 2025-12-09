@@ -1,33 +1,13 @@
-{% extends 'social/base.html' %}
+{% extends 'main/base.html' %}
 
 {% block content %}
 <aside class="left-sidebar">
-    {% include 'social/sidebar_left.html' %}
+    {% include 'main/sidebar_left.html' %}
 </aside>
 
 <main id="feedPage">
     <div class="main-feed">
-        <!-- Bloc création post -->
-        <div class="create-post-card">
-            <div class="post-creator-header">
-                <div class="creator-avatar" id="creatorAvatar">U</div>
-
-                <div class="post-input-area">
-                    <textarea class="post-textarea" id="postTextarea" placeholder="Quoi de neuf ?"></textarea>
-                </div>
-            </div>
-
-            <div class="img-preview-container" id="imgPreviewContainer">
-                <img class="preview-image" id="previewImg" alt="Aperçu">
-                <button class="remove-preview-btn" id="removeImgBtn">×</button>
-            </div>
-
-            <div class="post-actions">
-                <input type="file" id="imageInput" accept="image/*" style="display:none;">
-                <button class="action-btn btn-secondary" id="addImageBtn">📷 Photo</button>
-                <button class="action-btn btn-primary" id="publishBtn">✨ Publier</button>
-            </div>
-        </div>
+        
 
         <!-- Conteneur des posts -->
         <div class="posts-container" id="postsContainer">
@@ -41,7 +21,7 @@
 </main>
 
 <aside class="right-sidebar">
-    {% include 'social/sidebar_right.html' %}
+    {% include 'main/sidebar_right.html' %}
 </aside>
 
 {% endblock %}

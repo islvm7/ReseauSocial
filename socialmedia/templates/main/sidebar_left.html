@@ -1,6 +1,8 @@
+{% if user.is_authenticated %}
 <div class="profile-card">
-    <div class="profile-avatar" id="profileAvatar">U</div>
-    <div class="profile-name" id="profileName">Utilisateur</div>
+    <div class="profile-avatar" id="profileAvatar">{{ user.username|first|upper }}
+</div>
+    <div class="profile-name" id="profileName">{{ user.username }}</div>
     <div class="profile-bio" id="profileBio">Bienvenue</div>
 
     <div class="profile-stats">
@@ -18,6 +20,12 @@
 <div class="menu-card">
     <div class="menu-title">⚙️ Paramètres</div>
     <div class="menu-list">
-        <div class="menu-option" id="editProfileBtn">✏️ Modifier le profil</div>
+        <div class="menu-option" id="editProfileBtn"><a href="{% url 'socialmedia:edit_profile' %}" >Modifier le profil</a></div>
+        <div class="menu-option" id="editProfileBtn">
+        <form method="post" action="{% url 'socialmedia:logout_user' %}">
+    {% csrf_token %}
+    <button type="submit">Se déconnecter</button></div>
+</form>
     </div>
 </div>
+{% endif %}

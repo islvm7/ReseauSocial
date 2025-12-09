@@ -1,0 +1,57 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.user }}  {# champ caché #}
+
+    <!-- Bloc création post -->
+    <div class="create-post-card">
+
+        <div class="post-creator-header">
+            <div class="creator-avatar" id="creatorAvatar">
+                {{ request.user.username|first|upper }}
+            </div>
+
+            <div class="post-input-area">
+                {{ form.caption }}  {# textarea stylée #}
+            </div>
+        </div>
+
+        <div class="img-preview-container" id="imgPreviewContainer">
+            <img class="preview-image" id="previewImg" alt="Aperçu">
+            <button class="remove-preview-btn" id="removeImgBtn">×</button>
+        </div>
+
+        <div class="post-actions">
+            {{ form.image }}  {# input file réel (caché par CSS) #}
+            <button class="action-btn btn-secondary" type="button" id="addImageBtn">📷 Photo</button>
+            <button class="action-btn btn-primary" type="submit" id="publishBtn">✨ Publier</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    // JS pour ouvrir l’input file
+    document.getElementById("addImageBtn").onclick = () => {
+        document.getElementById("id_image").click();
+    };
+
+    // Preview de l’image
+    document.getElementById("id_image").addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById("previewImg");
+        const container = document.getElementById("imgPreviewContainer");
+
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            container.style.display = "block";
+        }
+    });
+
+    // Supprimer preview
+    document.getElementById("removeImgBtn").onclick = function() {
+        document.getElementById("id_image").value = "";
+        document.getElementById("imgPreviewContainer").style.display = "none";
+    };
+</script>
+{% endblock %}
