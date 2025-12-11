@@ -1,6 +1,64 @@
 <div class="suggestions-card">
     <div class="suggestions-title">👥 Suggestions d'amis</div>
-    <div class="suggestion-list" id="friendSuggestions"></div>
+    <div class="suggestion-list" id="friendSuggestions">
+        
+    
+        {% if recommendations %}
+        <div class="row">
+            {% for rec in recommendations %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{{ rec.profile.profileimg.url }}" 
+                                 alt="{{ rec.user.username }}"
+                                 class="rounded-circle me-3"
+                                 style="width: 60px; height: 60px; object-fit: cover;">
+                            <div>
+                                <h5 class="card-title mb-0">{{ rec.user.username }}</h5>
+                                <small class="text-muted">
+                                    Score: {{ rec.score|floatformat:2 }}
+                                    {% if rec.score >= 0.7 %}🔥{% elif rec.score >= 0.4 %}⭐{% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        
+                        {% if rec.profile.bio %}
+                        <p class="card-text text-muted small">
+                            {{ rec.profile.bio|truncatewords:20 }}
+                        </p>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            {% if rec.mutual_friends > 0 %}
+                            <span class="badge bg-primary">
+                                👥 {{ rec.mutual_friends }} ami{{ rec.mutual_friends|pluralize }} en commun
+                            </span>
+                            {% endif %}
+                            
+                            {% if rec.profile.location %}
+                            <span class="badge bg-secondary">
+                                📍 {{ rec.profile.location }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if rec.profile.interests %}
+                        <p class="small mb-2">
+                            <strong>Intérêts:</strong> {{ rec.profile.interests }}
+                        </p>
+                        {% endif %}
+                        
+                        <a href="{% url 'send_friend_request' rec.user.id %}" 
+                           class="btn btn-primary btn-sm w-100">
+                            ➕ Ajouter comme ami
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div> 
 </div>
 
 <div class="suggestions-card">

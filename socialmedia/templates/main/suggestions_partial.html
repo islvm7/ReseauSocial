@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+{% for profile in profiles %}
+<div class="suggestion-item" style="background-color: aliceblue;">
+    <img src="{{ profile.profileimg.url }}" class="suggestion-avatar">
+
+    <div class="suggestion-info">
+        <div class="suggestion-username">@{{ user.username }}</div>
+    </div>
+
+    <form method="POST" action="{% url 'socialmedia:follow_user' %}">
+        {% csrf_token %}
+        <input type="hidden" name="user" value="{{ user.username }}">
+        <button class="follow-btn">Suivre</button>
+    </form>
+</div>
+{% empty %}
+<div class="empty-state">Vous suivez déjà tout le monde ✨</div>
+{% endfor %}
+{% endblock %}

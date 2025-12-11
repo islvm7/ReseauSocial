@@ -5,7 +5,7 @@ __pycache__/
 # Django
 db.sqlite3
 /media/
-static/
+users_backup.json
 
 # VSCode
 .vscode/

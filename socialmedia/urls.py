@@ -10,5 +10,10 @@ urlpatterns = [
     path('signup/',views.signup,name='signup'),
     path('logout_user/',views.logout_user,name='logout_user'),
     path('edit_profile/',views.edit_profile,name='edit_profile'),
+    path("suggestions/", views.suggestions, name="suggestions"),
+    path("search/", views.search, name="search"),
+    path("follow/", views.follow_user, name="follow_user"),
+    path("like/<str:post_id>/", views.like_post, name="like_post"),
+    
 
 ]

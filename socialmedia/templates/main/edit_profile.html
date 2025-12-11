@@ -1,26 +1,371 @@
 {% extends 'main/base.html' %}
 {% block content %}
-<h2>Modifier mon profil</h2>
+<style>
+    .edit-profile-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+    }
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+    .profile-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+    }
 
-    <!--div class="form-section">
-        <label for="id_profileimg">Photo de profil :</label><br>
+    .profile-header h2 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .profile-header p {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .profile-image-section {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .current-profile-img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #667eea;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .upload-btn-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .upload-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-block;
+    }
+
+    .upload-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .upload-btn-wrapper input[type=file] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-bottom: 25px;
+    }
+
+    .form-section {
+        margin-bottom: 25px;
+    }
+
+    .form-section.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-section label {
+        display: block;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .form-section input[type="text"],
+    .form-section input[type="email"],
+    .form-section input[type="tel"],
+    .form-section input[type="date"],
+    .form-section textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        background: #f8f9fa;
+    }
+
+    .form-section textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-section input:focus,
+    .form-section textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 14px 40px;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        padding: 14px 40px;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background: #e0e0e0;
+        transform: translateY(-2px);
+    }
+
+    .info-box {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+        font-size: 14px;
+        color: #1976d2;
+    }
+
+    .error-messages {
+        background: #ffebee;
+        border-left: 4px solid #f44336;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        color: #c62828;
+    }
+
+    .success-messages {
+        background: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        color: #2e7d32;
+    }
+
+    .field-icon {
+        margin-right: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .edit-profile-container {
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="edit-profile-container">
+    <div class="profile-header">
+        <h2>✏️ Modifier mon profil</h2>
+        <p>Personnalisez vos informations et partagez-en plus sur vous</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="error-messages">{{ message }}</div>
+            {% else %}
+                <div class="success-messages">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="info-box">
+        💡 <strong>Astuce :</strong> Un profil complet vous permet de mieux vous connecter avec d'autres membres de la communauté !
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Photo de profil -->
+        <div class="profile-image-section">
+            {% if user.profileimg %}
+                <img src="{{ user.profileimg.url }}" alt="Profile" class="current-profile-img" id="profilePreview">
+            {% else %}
+                <img src="/media/default.jpg" alt="Profile" class="current-profile-img" id="profilePreview">
+            {% endif %}
+            
+            <div class="upload-btn-wrapper">
+                <button class="upload-btn" type="button">📷 Changer la photo</button>
+                {{ form.profileimg }}
+            </div>
+        </div>
+
+        <!-- Informations personnelles -->
+        <div class="form-grid">
+            <div class="form-section">
+                <label for="{{ form.first_name.id_for_label }}">
+                    <span class="field-icon">👤</span> Prénom
+                </label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="form-section">
+                <label for="{{ form.last_name.id_for_label }}">
+                    <span class="field-icon">👤</span> Nom
+                </label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="form-section">
+                <label for="{{ form.email.id_for_label }}">
+                    <span class="field-icon">📧</span> Email
+                </label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-section">
+                <label for="{{ form.telephone.id_for_label }}">
+                    <span class="field-icon">📱</span> Téléphone
+                </label>
+                {{ form.telephone }}
+            </div>
+
+            <div class="form-section">
+                <label for="{{ form.date_naissance.id_for_label }}">
+                    <span class="field-icon">🎂</span> Date de naissance
+                </label>
+                {{ form.date_naissance }}
+            </div>
+
+            <div class="form-section">
+                <label for="{{ form.location.id_for_label }}">
+                    <span class="field-icon">📍</span> Localisation
+                </label>
+                {{ form.location }}
+            </div>
+        </div>
+
+        <!-- Centres d'intérêt -->
+        <div class="form-section full-width">
+            <label for="{{ form.interet.id_for_label }}">
+                <span class="field-icon">💡</span> Centres d'intérêt
+            </label>
+            {{ form.interet }}
+            <small style="color: #999; display: block; margin-top: 5px;">
+                Séparez vos intérêts par des virgules (ex: Sport, Musique, Voyage)
+            </small>
+        </div>
+
+        <!-- Biographie -->
+        <div class="form-section full-width">
+            <label for="{{ form.bio.id_for_label }}">
+                <span class="field-icon">📝</span> Biographie
+            </label>
+            {{ form.bio }}
+            <small style="color: #999; display: block; margin-top: 5px;">
+                Parlez-nous un peu de vous, vos passions, votre parcours...
+            </small>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">💾 Enregistrer les modifications</button>
+            <a href="{% url 'socialmedia:index' %}" class="btn-secondary">❌ Annuler</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Prévisualisation de l'image
+    const profileInput = document.querySelector('input[type="file"]');
+    const profilePreview = document.getElementById('profilePreview');
+
+    if (profileInput) {
+        profileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.edit-profile-container');
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(20px)';
         
-        {{ form.profileimg }}
-    </div-->
+        setTimeout(() => {
+            container.style.transition = 'all 0.5s ease';
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+        }, 100);
+    });
+</script>
 
-    <div class="form-section">
-        <label>Bio :</label>
-        {{ form.bio }}
-    </div>
-
-    <div class="form-section">
-        <label>Localisation :</label>
-        {{ form.location }}
-    </div>
-
-    <button type="submit" class="btn-primary">Enregistrer</button>
-</form>
 {% endblock %}
