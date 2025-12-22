@@ -14,6 +14,10 @@ urlpatterns = [
     path("search/", views.search, name="search"),
     path("follow/", views.follow_user, name="follow_user"),
     path("like/<str:post_id>/", views.like_post, name="like_post"),
+    path('feed/', views.feed_view, name='feed'),
+    path('discover/', views.discover_view, name='discover'),
+    path('post/<uuid:post_id>/like/', views.like_post, name='like_post'),
+    path('post/<uuid:post_id>/view/', views.track_post_view, name='track_post_view'),
     
 
 ]

@@ -130,3 +130,11 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'socialmedia/login/'
 
 AUTH_USER_MODEL = 'socialmedia.CustomUser'
+
+# Configuration des médias
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Taille maximale des fichiers uploadés
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB

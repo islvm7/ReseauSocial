@@ -1,7 +1,7 @@
 from django.shortcuts import render,HttpResponse,redirect
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
-from .models import Profile, Post, LikePost, FollowersCount,Friendship
+from .models import Profile, Post, LikePost, FollowersCount,Friendship, PostView
 from itertools import chain
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.views.decorators.http import require_POST
-from .post import ProfileUpdateForm,PostForm
+from .post import ProfileUpdateForm,PostForm,SignUpForm
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
@@ -18,7 +18,11 @@ from .friend_recommendation import FriendRecommendation
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
-User = get_user_model()  
+
+User = get_user_model() 
+from .content_recommendation import ContentRecommendation
+
+
 
 
 @login_required(login_url="/login/")
@@ -86,59 +90,107 @@ def search(request):
    })
 
 def signup(request):
+    """Vue d'inscription avec formulaire Django"""
+    if request.user.is_authenticated:
+        return redirect('socialmedia:index')
+    
     if request.method == 'POST':
-        # Récupérez les données du formulaire
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        location = request.POST.get('location')
-        interet = request.POST.get('interet')
-        bio = request.POST.get('bio')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
-        profileimg = request.FILES.get('profileimg')
+        form = SignUpForm(request.POST)
+        
+        if form.is_valid():
+            # Créer l'utilisateur
+            user = form.save(commit=False)
+            user.email = form.cleaned_data['email']
+            user.save()
+            
+            # Connexion automatique après inscription
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Bienvenue {username} ! Votre compte a été créé avec succès.')
+                return redirect('home')
+        else:
+            # Afficher les erreurs
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{error}")
+    else:
+        form = SignUpForm()
+    
+    context = {
+        'form': form
+    }
+    return render(request, 'main/signup.html', context)
+
+
+def signup_simple(request):
+    """Vue d'inscription simple sans formulaire Django"""
+    if request.user.is_authenticated:
+        return redirect('home')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        password2 = request.POST.get('password2', '')
         
         # Validation
         errors = []
         
-        if password1 != password2:
-            errors.append("Les mots de passe ne correspondent pas")
+        if not username:
+            errors.append("Le nom d'utilisateur est requis.")
+        elif len(username) < 3:
+            errors.append("Le nom d'utilisateur doit contenir au moins 3 caractères.")
+        elif User.objects.filter(username=username).exists():
+            errors.append("Ce nom d'utilisateur est déjà pris.")
         
-        if len(password1) < 8:
-            errors.append("Le mot de passe doit contenir au moins 8 caractères")
+        if not email:
+            errors.append("L'email est requis.")
+        elif User.objects.filter(email=email).exists():
+            errors.append("Cet email est déjà utilisé.")
         
-        if User.objects.filter(username=username).exists():
-            errors.append("Ce nom d'utilisateur existe déjà")
+        if not password:
+            errors.append("Le mot de passe est requis.")
+        elif len(password) < 8:
+            errors.append("Le mot de passe doit contenir au moins 8 caractères.")
         
-        if User.objects.filter(email=email).exists():
-            errors.append("Cet email est déjà utilisé")
+        if password != password2:
+            errors.append("Les mots de passe ne correspondent pas.")
         
+        # Si des erreurs existent
         if errors:
             for error in errors:
                 messages.error(request, error)
-            return render(request, 'main/signup.html', {'form': request.POST})
+            return render(request, 'main/signup.html', {
+                'username': username,
+                'email': email
+            })
         
-        # Créez l'utilisateur
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password1,
-            
-            location=location or '',
-            interet=interet or '',
-            bio=bio or ''
-        )
-        
-        # Ajoutez l'image si fournie
-        if profileimg:
-            user.profileimg = profileimg
+        # Créer l'utilisateur
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
             user.save()
+            
+            # Connexion automatique
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Bienvenue {username} ! Votre compte a été créé avec succès.')
+                return redirect('home')
         
-        # Connectez l'utilisateur automatiquement
-        login(request, user)
-        messages.success(request, f"Bienvenue {username} ! Votre compte a été créé avec succès.")
-        return redirect('socialmedia:index')
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la création du compte : {str(e)}")
+            return render(request, 'main/signup.html')
     
     return render(request, 'main/signup.html')
+
 
 @login_required(login_url="/login/")
 @require_http_methods(["GET", "POST"])
@@ -216,3 +268,69 @@ def follow_user(request):
         FollowersCount.objects.create(follower=follower, user=user)
 
     return redirect(request.META.get("HTTP_REFERER"))
+
+
+@login_required(login_url="/login/")
+def feed_view(request):
+    """Vue principale du fil d'actualité avec recommandations"""
+    
+    # Recommandations personnalisées
+    recommendations = ContentRecommendation.recommend_posts(request.user, limit=20)
+    
+    # Posts tendances (fallback si pas assez de recommandations)
+    trending = ContentRecommendation.get_trending_posts(days=7, limit=10)
+    
+    context = {
+        'recommendations': recommendations,
+        'trending_posts': trending,
+        'show_recommendations': len(recommendations) > 0
+    }
+    return render(request, 'main/feed.html', context)
+
+
+@login_required(login_url="/login/")
+@require_POST
+def like_post(request, post_id):
+    """Liker/unliker un post"""
+    post = get_object_or_404(Post, id=post_id)
+    
+    like, created = LikePost.objects.get_or_create(user=request.user, post=post)
+    
+    if not created:
+        # Unlike
+        like.delete()
+        post.no_of_likes = max(0, post.no_of_likes - 1)
+        liked = False
+    else:
+        # Like
+        post.no_of_likes += 1
+        liked = True
+    
+    post.save()
+    
+    return JsonResponse({
+        'liked': liked,
+        'total_likes': post.no_of_likes
+    })
+
+
+@login_required(login_url="/login/")
+def track_post_view(request, post_id):
+    """Tracker la vue d'un post"""
+    post = get_object_or_404(Post, id=post_id)
+    
+    # Créer ou mettre à jour la vue
+    PostView.objects.get_or_create(user=request.user, post=post)
+    
+    return JsonResponse({'status': 'ok'})
+
+
+@login_required
+def discover_view(request):
+    """Page de découverte avec posts tendances"""
+    trending = ContentRecommendation.get_trending_posts(days=7, limit=30)
+    
+    context = {
+        'trending_posts': trending
+    }
+    return render(request, 'main/discover.html', context)

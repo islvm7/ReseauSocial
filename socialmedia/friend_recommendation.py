@@ -5,14 +5,14 @@ import re
 from .models import Friendship
 from django.contrib.auth import get_user_model
 
-User = get_user_model()  # Utilise CustomUser
+User = get_user_model() 
 
 
 class FriendRecommendation:
     
     @staticmethod
     def get_friends(user):
-        """Obtient tous les amis d'un utilisateur"""
+        
         friends_ids = Friendship.objects.filter(
             Q(from_user=user, status='accepted') | 
             Q(to_user=user, status='accepted')

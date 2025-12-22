@@ -1,0 +1,371 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Découvrir - Réseau Social</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .nav-link:hover {
+            opacity: 0.8;
+        }
+        .post-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .post-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .post-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+        }
+        .post-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+            border: 2px solid #667eea;
+        }
+        .post-actions {
+            padding: 15px;
+            background-color: white;
+        }
+        .like-btn {
+            border: none;
+            background: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .like-btn:hover {
+            transform: scale(1.2);
+        }
+        .like-btn.liked {
+            color: #e74c3c;
+        }
+        .like-btn:not(.liked) {
+            color: #999;
+        }
+        .post-caption {
+            padding: 0 15px 15px 15px;
+            background-color: white;
+        }
+        .trending-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .filter-tabs {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .filter-tabs .nav-link {
+            color: #666;
+            border-radius: 10px;
+            margin: 0 5px;
+        }
+        .filter-tabs .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .stats {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .username-link {
+            color: #333;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .username-link:hover {
+            color: #667eea;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'socialmedia:feed' %}">
+                <i class="fas fa-share-alt"></i> Réseau Social
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'socialmedia:feed' %}">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'socialmedia:discover' %}">
+                            <i class="fas fa-compass"></i> Découvrir
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'socialmedia:suggestions' %}">
+                            <i class="fas fa-user-friends"></i> Amis
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'socialmedia:edit_profile' %}">
+                            <i class="fas fa-user"></i> Profil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'socialmedia:logout' %}">
+                            <i class="fas fa-sign-out-alt"></i> Déconnexion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1><i class="fas fa-fire text-danger"></i> Découvrir</h1>
+            <p class="text-muted">Les posts les plus populaires de la semaine</p>
+        </div>
+
+        <!-- Filtres (optionnel) -->
+        <div class="filter-tabs">
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-fire"></i> Tendances
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-clock"></i> Récents
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-star"></i> Top
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Posts Grid -->
+        {% if trending_posts %}
+            <div class="row">
+                {% for post in trending_posts %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="post-card">
+                        <!-- Header du post -->
+                        <div class="post-header">
+                            <img src="{{ post.user.profileimg.url }}" alt="{{ post.user.username }}">
+                            <div>
+                                <a href="{% url 'view_profile' post.user.username %}" class="username-link">
+                                    @{{ post.user.username }}
+                                </a>
+                                <div class="text-muted small">
+                                    <i class="far fa-clock"></i> {{ post.created_at|timesince }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Image du post -->
+                        <img src="{{ post.image.url }}" 
+                             alt="Post image" 
+                             class="post-image"
+                             data-bs-toggle="modal" 
+                             data-bs-target="#postModal{{ post.id }}">
+
+                        <!-- Actions -->
+                        <div class="post-actions">
+                            <button class="like-btn {% if request.user in post.likes.all %}liked{% endif %}" 
+                                    data-post-id="{{ post.id }}"
+                                    onclick="likePost('{{ post.id }}')">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">{{ post.no_of_likes }}</span>
+                            </button>
+                            <button class="btn btn-link text-decoration-none">
+                                <i class="far fa-comment"></i>
+                                <span>{{ post.comments.count }}</span>
+                            </button>
+                            <button class="btn btn-link text-decoration-none">
+                                <i class="far fa-share-square"></i>
+                            </button>
+                        </div>
+
+                        <!-- Caption -->
+                        <div class="post-caption">
+                            <p class="mb-1">
+                                <strong>{{ post.user.username }}</strong>
+                                {{ post.caption|truncatewords:20 }}
+                            </p>
+                            {% if post.no_of_likes > 50 %}
+                            <div class="stats">
+                                <i class="fas fa-fire text-danger"></i> 
+                                <strong>Post populaire !</strong>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal pour voir le post en grand -->
+                <div class="modal fade" id="postModal{{ post.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <img src="{{ post.user.profileimg.url }}" 
+                                         style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                                    @{{ post.user.username }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img src="{{ post.image.url }}" class="img-fluid" alt="Post">
+                                <div class="mt-3 text-start">
+                                    <p><strong>{{ post.user.username }}</strong> {{ post.caption }}</p>
+                                    <div class="text-muted small">
+                                        <i class="fas fa-heart text-danger"></i> {{ post.no_of_likes }} likes
+                                        • <i class="far fa-clock"></i> {{ post.created_at|date:"d M Y" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Bouton charger plus -->
+            <div class="text-center my-5">
+                <button class="btn btn-lg btn-outline-primary">
+                    <i class="fas fa-plus-circle"></i> Charger plus de posts
+                </button>
+            </div>
+        {% else %}
+            <!-- État vide -->
+            <div class="empty-state">
+                <i class="fas fa-image"></i>
+                <h3>Aucun post disponible</h3>
+                <p class="text-muted">Soyez le premier à poster quelque chose !</p>
+                <a href="{% url 'socialmedia:feed' %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus"></i> Créer un post
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fonction pour liker un post
+        async function likePost(postId) {
+            try {
+                const response = await fetch(`/post/${postId}/like/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                // Mettre à jour l'interface
+                const likeBtn = document.querySelector(`button[data-post-id="${postId}"]`);
+                const likeCount = likeBtn.querySelector('.like-count');
+                
+                likeCount.textContent = data.total_likes;
+                
+                if (data.liked) {
+                    likeBtn.classList.add('liked');
+                } else {
+                    likeBtn.classList.remove('liked');
+                }
+                
+                // Animation
+                likeBtn.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    likeBtn.style.transform = 'scale(1)';
+                }, 200);
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors du like');
+            }
+        }
+
+        // Animation au scroll
+        window.addEventListener('scroll', () => {
+            const cards = document.querySelectorAll('.post-card');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

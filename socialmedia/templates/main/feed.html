@@ -9,14 +9,155 @@
     <div class="main-feed">
         
 
-        <!-- Conteneur des posts -->
-        <div class="posts-container" id="postsContainer">
-            <div class="empty-state">
-                <div class="empty-icon">📱</div>
-                <div class="empty-title">Aucune publication</div>
-                <div class="empty-subtitle">Ajoutez des amis pour voir leurs posts</div>
+        <div class="container mt-4">
+    <div class="row">
+        <!-- Fil principal -->
+        <div class="col-lg-8">
+            <h2 class="mb-4">🏠 Fil d'actualité</h2>
+            
+            {% if show_recommendations %}
+                <div class="alert alert-info mb-4">
+                    <strong>✨ Recommandations personnalisées</strong>
+                    <p class="mb-0 small">Basées sur vos interactions et centres d'intérêt</p>
+                </div>
+                
+                {% for rec in recommendations %}
+                <div class="card mb-3 post-card" data-post-id="{{ rec.post.id }}">
+                    <div class="card-header d-flex align-items-center">
+                        <img src="{{ rec.post.user.profile.profileimg.url }}" 
+                             class="rounded-circle me-2"
+                             style="width: 40px; height: 40px; object-fit: cover;">
+                        <div>
+                            <strong>@{{ rec.post.user.username }}</strong>
+                            <small class="text-muted d-block">
+                                {{ rec.post.created_at|timesince }} • Score: {{ rec.score|floatformat:2 }}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <img src="{{ rec.post.image.url }}" 
+                         class="card-img-top post-image"
+                         alt="Post image">
+                    
+                    <div class="card-body">
+                        <!-- Boutons d'action -->
+                        <div class="mb-2">
+                            <button class="btn btn-sm btn-outline-danger like-btn" 
+                                    data-post-id="{{ rec.post.id }}">
+                                <span class="like-icon">❤️</span>
+                                <span class="like-count">{{ rec.post.no_of_likes }}</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary">
+                                💬 Commenter
+                            </button>
+                        </div>
+                        
+                        <!-- Caption -->
+                        <p class="card-text">
+                            <strong>{{ rec.post.user.username }}</strong>
+                            {{ rec.post.caption }}
+                        </p>
+                        
+                        <!-- Raison de recommandation -->
+                        {% if rec.reason %}
+                        <small class="text-muted">
+                            <em>🎯 {{ rec.reason }}</em>
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-warning">
+                    <h5>👋 Bienvenue !</h5>
+                    <p>Commencez à liker des posts et suivre des utilisateurs pour obtenir des recommandations personnalisées.</p>
+                    <a href="{% url 'socialmedia:discover' %}" class="btn btn-primary">
+                        Découvrir des posts tendances
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header">
+                    <h5 class="mb-0">🔥 Tendances</h5>
+                </div>
+                <div class="card-body">
+                    {% for post in trending_posts|slice:":5" %}
+                    <div class="d-flex mb-3 align-items-center">
+                        <img src="{{ post.image.url }}" 
+                             class="rounded me-2"
+                             style="width: 60px; height: 60px; object-fit: cover;">
+                        <div class="flex-grow-1">
+                            <small class="d-block"><strong>@{{ post.user.username }}</strong></small>
+                            <small class="text-muted">{{ post.no_of_likes }} likes</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <a href="{% url 'socialmedia:discover' %}" class="btn btn-sm btn-outline-primary w-100">
+                        Voir plus
+                    </a>
+                </div>
             </div>
         </div>
+    </div>
+</div>
+
+<script>
+// Tracker les vues de posts
+document.querySelectorAll('.post-card').forEach(card => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const postId = card.dataset.postId;
+                fetch(`/post/${postId}/view/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                });
+                observer.unobserve(card);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    observer.observe(card);
+});
+
+// Gestion des likes
+document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const postId = this.dataset.postId;
+        const response = await fetch(`/post/${postId}/like/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+        
+        const data = await response.json();
+        this.querySelector('.like-count').textContent = data.total_likes;
+        
+        if (data.liked) {
+            this.classList.remove('btn-outline-danger');
+            this.classList.add('btn-danger');
+        } else {
+            this.classList.remove('btn-danger');
+            this.classList.add('btn-outline-danger');
+        }
+    });
+});
+</script>
+
+<style>
+.post-image {
+    max-height: 500px;
+    object-fit: cover;
+}
+</style>
     </div>
 </main>
 
