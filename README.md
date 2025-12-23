@@ -85,11 +85,15 @@ ReseauSocial/
 │   ├── models.py        # Database models
 │   ├── views.py         # View functions
 │   ├── urls.py          # App URL routing
+│   ├── post.py          # App forms
+│   ├── freind_recommendation.py          # App freinds suggestions Algorithm
+│   ├── post_recommendation.py          # App posts suggestions Algorithm
 │   ├── static/          # CSS, JS, images
 │   │   ├── css/
 │   │   └── js/
 │   └── templates/       # HTML templates
 │       └── main/
+│       └── registration/
 ├── db.sqlite3           # Database (not in repo)
 ├── manage.py            # Django management script
 └── requirements.txt     # Python dependencies
@@ -131,12 +135,6 @@ python manage.py collectstatic
 2. Click "Edit Profile"
 3. Update your bio, location, or profile picture
 4. Save changes
-
-### Searching Users
-
-1. Use the search page
-2. Enter a username
-3. View search results
 
 ## 🤝 Contributing
 
@@ -209,12 +207,14 @@ EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 ```
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 👥 Authors
-
+Siakene Raihane
+Zerrouki Imane
+Yahiaoui Mohamed Islem
+Mellali Abderhmane Rayane
+Zitouni Lyna
+Yachir Meriem
 
 
 
@@ -224,7 +224,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Tailwind CSS for inspiration
 - Open source community
 
----
 
-
-**Happy coding! 🎉**
