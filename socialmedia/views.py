@@ -11,12 +11,11 @@ from django.contrib import messages
 
 @login_required(login_url="/login/")
 def index (request):
-   return render(request,'base.html')
+   return render(request,'main/feed.html')
 @login_required(login_url="/login/")
 def logout_user(request):
     logout(request)
-    url=reverse_lazy('socialmedia:login')
-    return redirect(url)
+    return redirect('login')
 
 
 @login_required(login_url="/login/")
@@ -26,11 +25,11 @@ def dashboard(request):
 @login_required(login_url="/login/")
 def upload(request):
    if request.method == 'POST':
-      user = request.user.username
+      user = request.user  # Use the User object, not username string
       image = request.FILES.get('image_upload')
       caption = request.POST['caption']
 
-      new_post = Post.objects.create(user=user,image=image,caption=caption)
+      new_post = Post.objects.create(user=user, image=image, caption=caption)
       new_post.save()
 
       return redirect('/')

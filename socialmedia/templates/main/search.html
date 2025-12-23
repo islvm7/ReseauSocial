@@ -1,0 +1,34 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="search-container">
+    <h1>Search Users</h1>
+
+    <form method="post" class="search-form">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Search for users..." required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if username_profile_list %}
+    <div class="search-results">
+        <h2>Search Results</h2>
+        {% for profile in username_profile_list %}
+        <div class="user-card">
+            <div class="user-info">
+                <h3>{{ profile.user.username }}</h3>
+                {% if profile.bio %}
+                <p>{{ profile.bio }}</p>
+                {% endif %}
+                {% if profile.location %}
+                <p>Location: {{ profile.location }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif request.method == "POST" %}
+    <p>No users found matching your search.</p>
+    {% endif %}
+</div>
+{% endblock %}
