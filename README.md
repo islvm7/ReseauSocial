@@ -215,7 +215,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👥 Authors
 
-- **islvm7** - *Initial work* - [GitHub](https://github.com/islvm7)
+
+
 
 ## 🙏 Acknowledgments
 
@@ -224,5 +225,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Open source community
 
 ---
+
 
 **Happy coding! 🎉**
