@@ -209,12 +209,12 @@ CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 
 ## 👥 Authors
-Siakene Raihane
-Zerrouki Imane
-Yahiaoui Mohamed Islem
-Mellali Abderhmane Rayane
-Zitouni Lyna
-Yachir Meriem
+-Siakene Raihane
+-Zerrouki Imane
+-Yahiaoui Mohamed Islem
+-Mellali Abderhmane Rayane
+-Zitouni Lyna
+-Yachir Meriem
 
 
 
@@ -223,5 +223,6 @@ Yachir Meriem
 - Django documentation
 - Tailwind CSS for inspiration
 - Open source community
+
 
 
